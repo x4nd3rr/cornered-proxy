@@ -16,16 +16,30 @@ app.post("/crane", async (req, res) => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "llama3-8b-8192",
+                model: "llama-3.1-8b-instant",
                 messages: messages,
-                max_tokens: 80,
+                max_tokens: 100,
                 temperature: 0.7,
             })
         })
+
         const data = await response.json()
-        const text = data.choices?.[0]?.message?.content || "..."
+        console.log("Groq response:", JSON.stringify(data))
+
+        if (data.error) {
+            console.error("Groq error:", data.error)
+            return res.status(500).json({ error: data.error.message })
+        }
+
+        const text = data.choices?.[0]?.message?.content
+        if (!text) {
+            console.error("No content in response:", JSON.stringify(data))
+            return res.status(500).json({ error: "No content returned" })
+        }
+
         res.json({ response: text })
     } catch (err) {
+        console.error("Proxy error:", err)
         res.status(500).json({ error: err.message })
     }
 })
