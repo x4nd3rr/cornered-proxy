@@ -16,10 +16,10 @@ app.post("/crane", async (req, res) => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "llama-3.1-8b-instant",
+                model: "llama-3.3-70b-versatile",
                 messages: messages,
-                max_tokens: 100,
-                temperature: 0.7,
+                max_tokens: 120,
+                temperature: 0.6,
             })
         })
 
@@ -33,7 +33,7 @@ app.post("/crane", async (req, res) => {
 
         const text = data.choices?.[0]?.message?.content
         if (!text) {
-            console.error("No content in response:", JSON.stringify(data))
+            console.error("No content:", JSON.stringify(data))
             return res.status(500).json({ error: "No content returned" })
         }
 
